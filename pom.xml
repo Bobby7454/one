@@ -13,12 +13,10 @@
     <packaging>war</packaging>
 
     <name>Java Home myweb</name>
-    <url>https://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Build old application code using Java 8 compatibility -->
         <maven.compiler.release>8</maven.compiler.release>
 
         <docker.image.prefix>kammana</docker.image.prefix>
@@ -34,34 +32,11 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-             <repository>
-                    <id>flm-feed</id>
-                    <url>https://pkgs.dev.azure.com/afsanabegummd00/MyFirstProject/_packaging/flm-feed/maven/v1</url>
-                    <releases>
-                      <enabled>true</enabled>
-                      </releases>
-                      <snapshots>
-                               <enabled>true</enabled>
-                      </snapshots>
-              </repository>
-    </repositories>
-
     <distributionManagement>
-            <repository>
-  <id>flm-feed</id>
-  <url>https://pkgs.dev.azure.com/afsanabegummd00/MyFirstProject/_packaging/flm-feed/maven/v1</url>
-  <releases>
-    <enabled>true</enabled>
-  </releases>
-  <snapshots>
-    <enabled>true</enabled>
-  </snapshots>
-</repository>
-        <snapshotRepository>
+        <repository>
             <id>nexusRepo</id>
-            <url>http://34.208.218.12:8081/repository/sample-snapshots/</url>
-        </snapshotRepository>
+            <url>http://3.148.105.235:8081/repository/my-repo/</url>
+        </repository>
     </distributionManagement>
 
     <build>
