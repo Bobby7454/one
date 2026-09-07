@@ -9,7 +9,7 @@
 
     <groupId>in.javahome</groupId>
     <artifactId>myweb</artifactId>
-    <version>8.8.6</version>
+    <version>8.8.1</version>
     <packaging>war</packaging>
 
     <name>Java Home myweb</name>
@@ -35,7 +35,7 @@
     <distributionManagement>
         <repository>
             <id>nexusRepo</id>
-            <url>http://3.148.105.235:8081/repository/myrepo/</url>
+            <url>http://3.12.120.145:8081//repository/myrepo/</url>
         </repository>
     </distributionManagement>
 
