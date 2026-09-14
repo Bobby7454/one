@@ -3,22 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buggy Shop</title>
+
+    <title>NexusShop - Quality Gate Test</title>
 
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f5f5f5;
             margin: 0;
-            padding: 20px;
+            background: #f4f4f4;
         }
 
         header {
-            background: #222;
+            background: #111;
             color: white;
             padding: 20px;
-            display: flex;
-            justify-content: space-between;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
         }
 
         .products {
@@ -31,27 +34,31 @@
         .product {
             background: white;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 8px;
         }
 
         .product img {
             width: 100%;
-            height: 180px;
+            height: 200px;
             object-fit: cover;
         }
 
         button {
-            background: #ff6347;
+            background: #ff5733;
             color: white;
-            border: 0;
-            padding: 10px 15px;
+            border: none;
+            padding: 10px;
             cursor: pointer;
-            border-radius: 5px;
         }
 
-        input {
-            padding: 10px;
-            width: 250px;
+        .error {
+            color: red;
+        }
+
+        @media(max-width:700px) {
+            .products {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -59,111 +66,135 @@
 <body>
 
 <header>
-    <h2>BuggyShop</h2>
-    <div>
-        🛒 Cart: <span id="cartCount">0</span>
+    <div class="container">
+        <h1>NexusShop</h1>
+
+        <input
+            type="text"
+            id="search"
+            placeholder="Search products"
+        >
+
+        <button onclick="searchProducts()">Search</button>
+
+        <span>
+            Cart:
+            <strong id="cartCount">0</strong>
+        </span>
     </div>
 </header>
 
-<main>
+<main class="container">
 
-    <input
-        type="text"
-        id="search"
-        placeholder="Search products..."
-    >
+    <h2>Products</h2>
 
-    <button id="searchButton">Search</button>
+    <div id="message"></div>
 
-    <div class="products" id="products"></div>
+    <div id="products" class="products"></div>
 
 </main>
 
 <script>
 
+    // Intentionally unused variables
+    var username = "admin";
+    var password = "123456";
+    var apiKey = "TEST-SECRET-123456";
+    var unusedValue = 999;
+
+    // Hard-coded sensitive-looking information
+    const DATABASE_PASSWORD = "password123";
+
     const products = [
         {
             id: 1,
             name: "iPhone 15",
+            category: "Phone",
             price: 799,
+            stock: 10,
             image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd"
         },
         {
             id: 2,
             name: "MacBook Air",
+            category: "Laptop",
             price: 999,
+            stock: 5,
             image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8"
         },
         {
             id: 3,
-            name: "Headphones",
+            name: "Sony Headphones",
+            category: "Audio",
             price: 199,
+            stock: 20,
             image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e"
         }
     ];
 
     let cart = [];
 
-    const productContainer =
-        document.getElementById("products");
+    // Duplicate function
+    function calculateTotal(items) {
+        let total = 0;
 
-    const cartCount =
-        document.getElementById("cartCount");
+        for (let i = 0; i < items.length; i++) {
+            total = total + items[i].price;
+        }
 
-    const searchInput =
-        document.getElementById("search");
+        return total;
+    }
+
+    // Almost identical duplicate function
+    function calculateCartTotal(items) {
+        let total = 0;
+
+        for (let i = 0; i < items.length; i++) {
+            total = total + items[i].price;
+        }
+
+        return total;
+    }
 
     function displayProducts(items) {
 
-        productContainer.innerHTML = "";
+        const container = document.getElementById("products");
+
+        container.innerHTML = "";
+
+        if (items.length === 0) {
+            container.innerHTML = "<p>No products found</p>";
+        }
 
         items.forEach(function(product) {
 
-            productContainer.innerHTML += `
-                <div class="product">
-
-                    <img src="${product.image}" alt="${product.name}">
-
-                    <h3>${product.name}</h3>
-
-                    <p>$${product.price}</p>
-
-                    <button onclick="addToCart(${product.id})">
-                        Add to Cart
-                    </button>
-
-                </div>
-            `;
+            // Unsafe HTML construction
+            container.innerHTML +=
+                '<div class="product">' +
+                    '<img src="' + product.image + '">' +
+                    '<h3>' + product.name + '</h3>' +
+                    '<p>' + product.category + '</p>' +
+                    '<p>$' + product.price + '</p>' +
+                    '<p>Stock: ' + product.stock + '</p>' +
+                    '<button onclick="addToCart(' +
+                        product.id +
+                    ')">Add to Cart</button>' +
+                '</div>';
         });
     }
 
     function addToCart(id) {
 
+        // BUG:
+        // find() callback doesn't return anything.
         const product = products.find(function(item) {
-            item.id === id;
+            item.id == id;
         });
 
+        // Product may be undefined.
         cart.push(product);
 
-        cartCount.innerText = cart.length;
-    }
+        document.getElementById("cartCount").innerText =
+            cart.length;
 
-    document
-        .getElementById("searchButton")
-        .addEventListener("click", function() {
-
-            const query = searchInput.value.toLowerCase();
-
-            const results = products.filter(function(product) {
-                product.name.toLowerCase().includes(query);
-            });
-
-            displayProducts(results);
-        });
-
-    displayProducts(products);
-
-</script>
-
-</body>
-</html>
+        // Incorrect stock handling
